@@ -6,6 +6,12 @@ opts.add([
         , description : 'Show version and exit'
         , value: true
         , callback    : function () { console.log('v2.0');}
+    },
+    { short       : 'c'
+        , long        : 'c'
+        , description : 'Show version and exit'
+        , value: true
+        , required    : true
     }
 ])
 
