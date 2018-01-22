@@ -1,8 +1,7 @@
 { "name" : "opts"
-, "homepage": "http://github.com/khtdr/opts"
-, "repository": "github:khtdr/opts"
-, "version" : "1.2.6"
+, "homepage": "https://github.com/wuzhenglin510/opts"
+, "repository": "github:wuzhenglin510/opts"
+, "version" : "1.0.0"
 , "description" : "Command line argument parser."
-, "author" : "Oh Kay <khtdr.com@gmail.com> (http://khtdr.com)"
 , "main" : "src/opts"
 }
