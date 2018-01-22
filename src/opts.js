@@ -52,11 +52,67 @@ exports.version = '1.2.6';
  * Additionally, it takes a namespace as an argument, useful for
  * building options for a library in addition to the main app.
  */
-exports.add = function (options, namespace) {
-  for (var i=0; i<options.length; i++) {
-    options[i].namespace = namespace;
-    descriptors.opts.push(options[i]);
-  }
+exports.add = function (options) {
+
+
+    for (var i=0; i<options.length; i++) {
+        descriptors.opts.unshift(options[i]);
+    }
+    options = descriptors.opts;
+    var checkDup = function (opt, type) {
+        var prefix = (type == 'short')? '-': '--';
+        var name = opt[type];
+        if (!opts[prefix + name]) {
+            opts[prefix + name] = opt;
+        } else {
+            puts('Conflicting flags: ' + prefix + name + '\n');
+            puts(helpString());
+            process.exit(1);
+        }
+    };
+
+    var opts = {};
+    for (var i=0; i<options.length; i++) {
+        if (options[i].short) checkDup(options[i], 'short');
+        if (options[i].long) checkDup(options[i], 'long');
+    }
+
+    for (var i=2; i<process.argv.length; i++) {
+        var inp = process.argv[i];
+        if (opts[inp]) {
+            // found a match, process it.
+            var opt = opts[inp];
+            if (!opt.value) {
+                if (opt.callback) opt.callback(true);
+                if (opt.short) values[opt.short] = true;
+                if (opt.long) values[opt.long] = true;
+            } else {
+                var next = process.argv[i+1];
+                if (!next || opts[next]) {
+                    var flag = opt.short || opt.long;
+                    errors.push('Missing value for option: ' + flag);
+                    if (opt.short) values[opt.short] = true;
+                    if (opt.long) values[opt.long] = true;
+                } else {
+                    if (opt.callback) opt.callback(next);
+                    if (opt.short) values[opt.short] = next;
+                    if (opt.long) values[opt.long] = next;
+                    i++;
+                }
+            }
+        }
+    }
+    for (var i=0; i<options.length; i++) {
+        var flag = options[i].short || options[i].long;
+        if (options[i].required && !exports.get(flag)) {
+            errors.push('Missing required option: ' + flag);
+        }
+    }
+    if (errors.length) {
+        for (var i=0; i<errors.length; i++) puts(errors[i]);
+        puts('\n' + helpString());
+        process.exit(1);
+    }
 };
 
 /**
@@ -118,7 +174,6 @@ exports.parse = function (options, params, help) {
     descriptors.opts.unshift(options[i]);
   }
   options = descriptors.opts;
-
   var checkDup = function (opt, type) {
     var prefix = (type == 'short')? '-': '--';
     var name = opt[type];
