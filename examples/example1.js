@@ -11,6 +11,5 @@ var options = [
 opts.add(options);
 console.log('Example 1');
 
-module.exports = opts
 
 

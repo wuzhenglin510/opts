@@ -34,6 +34,7 @@ either expressed or implied, of Joey Mazzarelli.
 ***************************************************************************/
 
 var puts        = console.log
+  , env         = {}
   , values      = {}
   , args        = {}
   , argv        = []
@@ -44,6 +45,12 @@ var puts        = console.log
  * Get some version info out of it
  */
 exports.version = '1.2.6';
+
+
+exports.set = function (inputEnv) {
+    env = inputEnv;
+};
+
 
 /**
  * Add a set of option descriptors, not yet ready to be parsed.
@@ -104,8 +111,13 @@ exports.add = function (options) {
     }
     for (var i=0; i<options.length; i++) {
         var flag = options[i].short || options[i].long;
-        if (options[i].required && !exports.get(flag)) {
-            errors.push('Missing required option: ' + flag);
+        if (!exports.get(flag)) {
+            let envVal = env[options[i].short] || env[options[i].long];
+            if (options[i].short) values[options[i].short] = envVal;
+            if (options[i].long) values[options[i].long] = envVal;
+            if (options[i].required && !exports.get(flag)) {
+                errors.push('Missing required option: ' + flag);
+            }
         }
     }
     if (errors.length) {

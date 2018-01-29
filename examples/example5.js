@@ -1,4 +1,10 @@
-var opts = require('./example1');
+require('./example1')
+
+var opts = require('..');
+
+opts.set({
+    a: 'leo'
+});
 
 opts.add([
     { short       : 'a'
@@ -13,7 +19,7 @@ opts.add([
         , value: true
         , required    : true
     }
-])
+]);
 
 console.log('Example 5');
 console.log(`a: ${opts.get('a')}`);

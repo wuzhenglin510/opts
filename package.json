@@ -1,7 +1,7 @@
-{ "name" : "opts"
+{ "name" : "opts_v2"
 , "homepage": "https://github.com/wuzhenglin510/opts"
 , "repository": "github:wuzhenglin510/opts"
-, "version" : "1.0.0"
+, "version" : "1.0.1"
 , "description" : "Command line argument parser."
 , "main" : "src/opts"
 }
